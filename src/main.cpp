@@ -1,67 +1,39 @@
 #include <WiFi.h>
 #include <TFT_eSPI.h>
-#include <lvgl.h>
 #include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
 
-// WiFi 信息
-const char *ssid = "your_SSID";
-const char *password = "your_password";
-
-// WebSocket 服务器地址
-const char *websockets_server_host = "192.168.4.1"; // Enter server adress
-const uint16_t websockets_server_port = 80;         // Enter server port
 
 using namespace websockets;
-WebsocketsClient client;
 
-// TFT 配置
-TFT_eSPI tft = TFT_eSPI();
-#define TFT_WIDTH 240
-#define TFT_HEIGHT 320
 
-// LVGL 配置
-lv_disp_draw_buf_t draw_buf;
-lv_color_t buf[TFT_WIDTH * 10];
-
-// JSON 解析缓冲区大小
+// WiFi 信息
+const char *ssid = "motobox.cn";
+const char *password = "12345678";
+const char *websockets_server_host = "192.168.4.1"; // Enter server adress
+const uint16_t websockets_server_port = 80;         // Enter server port
 const size_t JSON_BUFFER_SIZE = JSON_OBJECT_SIZE(11) + 320;
 
-// GPS 数据结构
-struct GPSData
+
+WebsocketsClient client;
+TFT_eSPI tft = TFT_eSPI();
+
+String formatUnixTime(unsigned long timestamp)
 {
-    uint32_t gps_time;
-    char status;
-    float heading;
-    int hight;
-    char high_tube[10];
-    char lon_direction[2];
-    char lat_direction[2];
-    float longitude;
-    float latitude;
-    bool is_gps_normal;
-    float speed;
-};
+    // 将 UNIX 时间戳转换为 struct tm 结构
+    struct tm *tm;
+    time_t t = (time_t)timestamp;
+    tm = localtime(&t);
 
-GPSData gpsData;
+    // 格式化日期和时间
+    char buffer[20];
+    // UTC to 北京时间
+    tm->tm_hour += 8;
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", tm);
 
-/* Display flushing */
-void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
-{
-    uint32_t w = (area->x2 - area->x1 + 1);
-    uint32_t h = (area->y2 - area->y1 + 1);
-
-    tft.startWrite();
-    tft.setAddrWindow(area->x1, area->y1, w, h);
-    tft.pushColors((uint16_t *)&color_p->full, w * h, true);
-    tft.endWrite();
-
-    lv_disp_flush_ready(disp);
+    return String(buffer);
 }
 
-void webSocketEvent()
-{
-}
 
 void setup()
 {
@@ -73,66 +45,79 @@ void setup()
         Serial.print(".");
     }
     // 初始化 TFT 显示器
-    tft.init();
-    tft.setRotation(0);
-
-    // 初始化 LVGL
-    lv_init();
-    lv_disp_draw_buf_init(&draw_buf, buf, NULL, TFT_WIDTH * 10);
-
-    static lv_disp_drv_t disp_drv;
-    lv_disp_drv_init(&disp_drv);
-    disp_drv.hor_res = TFT_WIDTH;
-    disp_drv.ver_res = TFT_HEIGHT;
-    disp_drv.flush_cb = my_disp_flush;
-    disp_drv.draw_buf = &draw_buf;
-    lv_disp_drv_register(&disp_drv);
-
-     /*获取LVGL版本信息*/
-    String LVGL_Arduino = "Hello LVGL! ";
-    LVGL_Arduino += String('V') + lv_version_major() + "." + lv_version_minor() + "." + lv_version_patch(); //版本
-    lv_obj_t *label = lv_label_create(lv_scr_act());
-    lv_label_set_text(label, LVGL_Arduino.c_str());
-    lv_obj_align(label, LV_ALIGN_CENTER, 0, 0); //居中显示
-
-
-    // lvgl 显示 ip 地址 以及连接状态
-    String ip = "IP: ";
-    ip += WiFi.localIP().toString();
-    lv_obj_t *label_ip = lv_label_create(lv_scr_act());
-    lv_label_set_text(label_ip, ip.c_str());
-    lv_obj_align(label_ip, LV_ALIGN_CENTER, 0, 0);
-
+    tft.init();         // initialize a ST7735S chip, black tab
+    tft.setRotation(0); // set rotation to 0
+    tft.setRotation(1); // set rotation to 1
+    tft.fillScreen(TFT_BLACK);              // fill the screen with black
+    tft.setTextColor(TFT_WHITE, TFT_BLACK); // set text color to white and black background
+    tft.setCursor(0, 0);                    // set cursor to top-left corner
     // 连接到 WebSocket 服务器
     bool connected = client.connect(websockets_server_host, websockets_server_port, "/ws/gps");
-    if (connected)
+    if (!connected)
     {
-        // lvgl 显示连接状态
-        lv_obj_t *label_status = lv_label_create(lv_scr_act());
-        lv_label_set_text(label_status, "Connected");
-        lv_obj_align(label_status, LV_ALIGN_CENTER, 0, 0);
+        tft.println("Failed to connect to WebSocket server!");
+        return;
     }
-    else
-    {
-        // lvgl 显示连接状态
-        lv_obj_t *label_status = lv_label_create(lv_scr_act());
-        lv_label_set_text(label_status, "Disconnected");
-        lv_obj_align(label_status, LV_ALIGN_CENTER, 0, 0);
-    }
+    tft.println("Connected to WebSocket server!");
+    // run callback when messages are received
     client.onMessage([&](WebsocketsMessage message) {
-        // lvgl 循环打印数据
-        lv_obj_t *label = lv_label_create(lv_scr_act());
-        lv_label_set_text(label, message.data().c_str());
-        lv_obj_align(label, LV_ALIGN_CENTER, 0, 0);
-    });
+    // 解析JSON消息
+    DynamicJsonDocument jsonBuffer(JSON_BUFFER_SIZE);
+    DeserializationError error = deserializeJson(jsonBuffer, message.data());
+  
+    // 检查解析是否成功
+    if (error) {
+        tft.println("Failed to parse JSON!");
+        return;
+    }
+
+    // 获取速度、时间和经纬度、航向、高度
+    float speed = jsonBuffer["speed"];
+    unsigned long timestamp = jsonBuffer["gps_time"];
+    // unix timestamp to human readable time format 2020-01-01 00:00:00
+    String time = formatUnixTime(timestamp);
+    float latitude = jsonBuffer["latitude"];
+    float longitude = jsonBuffer["longitude"];
+    float heading = jsonBuffer["heading"];
+    float altitude = jsonBuffer["altitude"];
+
+    // 设置字体颜色
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    // 设置字体大小
+    tft.setTextSize(2);
+    // 坐标
+    tft.setCursor(0, 0);
+
+    // 打印时间
+    tft.print("Time:");
+    tft.println(time);
+  
+    // 打印速度
+    tft.print("Speed: ");
+    tft.println(speed);
+
+    // 打印经纬度
+    tft.print("Latitude: ");
+    tft.println(latitude);
+    tft.print("Longitude: ");
+    tft.println(longitude);
+    // 航向
+    tft.print("Heading: ");
+    tft.println(heading);
+    // 高度
+    tft.print("Altitude: ");
+    tft.println(altitude);
+
+});
+
 }
 
 void loop()
 {
+    // let the websockets client check for incoming messages
     if (client.available())
     {
         client.poll();
     }
-    lv_timer_handler();
-    delay(5);
+    delay(1000);
 }
