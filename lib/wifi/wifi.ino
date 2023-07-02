@@ -119,7 +119,6 @@ void gyro_ws()
     {
         Serial.println("Gyro WebSockets server connection failed!");
     }
-
 }
 
 void wifi_init()
@@ -136,8 +135,14 @@ void wifi_loop()
     {
         client_gyro.poll();
     }
+    else{
+        gyro_ws();
+    }
     if (client_gps.available())
     {
         client_gps.poll();
+    }
+    else{
+        gps_ws();
     }
 }
