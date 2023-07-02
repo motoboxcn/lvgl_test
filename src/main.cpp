@@ -46,8 +46,7 @@ void setup()
     }
     // 初始化 TFT 显示器
     tft.init();         // initialize a ST7735S chip, black tab
-    tft.setRotation(0); // set rotation to 0
-    tft.setRotation(1); // set rotation to 1
+    tft.setRotation(3); // set rotation to 0
     tft.fillScreen(TFT_BLACK);              // fill the screen with black
     tft.setTextColor(TFT_WHITE, TFT_BLACK); // set text color to white and black background
     tft.setCursor(0, 0);                    // set cursor to top-left corner
@@ -94,8 +93,10 @@ void setup()
   
     // 打印速度
     tft.print("Speed: ");
+    tft.setTextSize(4);
     tft.println(speed);
 
+    tft.setTextSize(2);
     // 打印经纬度
     tft.print("Latitude: ");
     tft.println(latitude);
@@ -119,5 +120,5 @@ void loop()
     {
         client.poll();
     }
-    delay(1000);
+    delay(200);
 }
