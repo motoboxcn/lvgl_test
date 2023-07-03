@@ -2,7 +2,6 @@
 #include <TFT_eSPI.h>
 #include <ui.h>
 #include <wifi.ino>
-#include <my_init.ino>
 #include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
 

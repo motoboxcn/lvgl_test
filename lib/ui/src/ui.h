@@ -31,22 +31,31 @@ void ui_event_speed( lv_event_t * e);
 extern lv_obj_t *ui_speed;
 extern lv_obj_t *ui_speed2;
 extern lv_obj_t *ui_Label1;
-extern lv_obj_t *ui_ood;
+extern lv_obj_t *ui_haiba;
 extern lv_obj_t *ui_location;
 extern lv_obj_t *ui_suzhou;
-extern lv_obj_t *ui_moto;
-extern lv_obj_t *ui_totalkm;
-extern lv_obj_t *ui_km;
-extern lv_obj_t *ui_roll;
-extern lv_obj_t *ui_du;
+extern lv_obj_t *ui_motoRoll;
+extern lv_obj_t *ui_rollText;
 extern lv_obj_t *ui_luxiang;
-extern lv_obj_t *ui_recordtime;
+extern lv_obj_t *ui_wifi;
+extern lv_obj_t *ui_websocket;
+extern lv_obj_t *ui_weixing;
+extern lv_obj_t *ui_haibaText;
+extern lv_obj_t *ui_gpsTime;
+extern lv_obj_t *ui_handing;
+extern lv_obj_t *ui_handingText;
 extern lv_obj_t *ui____initial_actions0;
 
-LV_IMG_DECLARE( ui_img_zuoyedaolu_png);   // assets/zuoyedaolu.png
+LV_IMG_DECLARE( ui_img_haiba_png);   // assets/haiba.png
 LV_IMG_DECLARE( ui_img_965679087);   // assets/map-b-2.png
+LV_IMG_DECLARE( ui_img_1869354606);   // assets/motuoche-diandongche.png
+LV_IMG_DECLARE( ui_img_918429721);   // assets/bx-video-recording.png
+LV_IMG_DECLARE( ui_img_wifi_png);   // assets/wifi.png
+LV_IMG_DECLARE( ui_img_ai70_png);   // assets/ai70.png
+LV_IMG_DECLARE( ui_img_weixing_png);   // assets/weixing.png
+LV_IMG_DECLARE( ui_img_direction_png);   // assets/direction.png
 LV_IMG_DECLARE( ui_img_1753992569);   // assets/motuoche-diandongche-2.png
-LV_IMG_DECLARE( ui_img_luxiang_png);   // assets/luxiang.png
+LV_IMG_DECLARE( ui_img_1743932013);   // assets/wuwifi-2.png
 
 void ui_init(void);
 

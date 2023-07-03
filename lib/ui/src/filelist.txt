@@ -1,7 +1,13 @@
 screens/ui_Screen1.c
 ui.c
 ui_helpers.c
-images/ui_img_zuoyedaolu_png.c
+images/ui_img_haiba_png.c
 images/ui_img_965679087.c
+images/ui_img_1869354606.c
+images/ui_img_918429721.c
+images/ui_img_wifi_png.c
+images/ui_img_ai70_png.c
+images/ui_img_weixing_png.c
+images/ui_img_direction_png.c
 images/ui_img_1753992569.c
-images/ui_img_luxiang_png.c
+images/ui_img_1743932013.c

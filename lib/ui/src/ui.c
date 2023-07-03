@@ -11,58 +11,58 @@
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
 lv_obj_t *ui_Screen1;
-void ui_event_speed(lv_event_t *e);
+void ui_event_speed( lv_event_t * e);
 lv_obj_t *ui_speed;
 lv_obj_t *ui_speed2;
 lv_obj_t *ui_Label1;
-lv_obj_t *ui_ood;
+lv_obj_t *ui_haiba;
 lv_obj_t *ui_location;
 lv_obj_t *ui_suzhou;
-lv_obj_t *ui_moto;
-lv_obj_t *ui_totalkm;
-lv_obj_t *ui_km;
-lv_obj_t *ui_roll;
-lv_obj_t *ui_du;
+lv_obj_t *ui_motoRoll;
+lv_obj_t *ui_rollText;
 lv_obj_t *ui_luxiang;
-lv_obj_t *ui_recordtime;
+lv_obj_t *ui_wifi;
+lv_obj_t *ui_websocket;
+lv_obj_t *ui_weixing;
+lv_obj_t *ui_haibaText;
+lv_obj_t *ui_gpsTime;
+lv_obj_t *ui_handing;
+lv_obj_t *ui_handingText;
 lv_obj_t *ui____initial_actions0;
 const lv_img_dsc_t *ui_imgset_430168462[1] = {&ui_img_965679087};
 const lv_img_dsc_t *ui_imgset_1518336564[1] = {&ui_img_1753992569};
+const lv_img_dsc_t *ui_imgset_903594658[1] = {&ui_img_1743932013};
+const lv_img_dsc_t *ui_imgset_ai[1] = {&ui_img_ai70_png};
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
 #if LV_COLOR_DEPTH != 16
-#error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
+    #error "LV_COLOR_DEPTH should be 16bit to match SquareLine Studio's settings"
 #endif
-#if LV_COLOR_16_SWAP != 0
-#error "LV_COLOR_16_SWAP should be 0 to match SquareLine Studio's settings"
+#if LV_COLOR_16_SWAP !=0
+    #error "LV_COLOR_16_SWAP should be 0 to match SquareLine Studio's settings"
 #endif
 
 ///////////////////// ANIMATIONS ////////////////////
 
 ///////////////////// FUNCTIONS ////////////////////
-void ui_event_speed(lv_event_t *e)
-{
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t *target = lv_event_get_target(e);
-    if (event_code == LV_EVENT_VALUE_CHANGED)
-    {
-        // target to set label text
-        lv_obj_t *label = ui_speed2;
-        // get value
-        int value = lv_arc_get_value(target);
-        // set label text
-        lv_label_set_text_fmt(label, "%d", value);
-    }
+void ui_event_speed( lv_event_t * e) {
+    lv_event_code_t event_code = lv_event_get_code(e);lv_obj_t * target = lv_event_get_target(e);
+if ( event_code == LV_EVENT_VALUE_CHANGED) {
+      _ui_arc_set_text_value( ui_speed2, target, "", "");
+}
+if ( event_code == LV_EVENT_SCREEN_LOADED) {
+      _ui_arc_increment( ui_speed, 299);
+}
 }
 
 ///////////////////// SCREENS ////////////////////
 
-void ui_init(void)
+void ui_init( void )
 {
-    lv_disp_t *dispp = lv_disp_get_default();
-    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), false, LV_FONT_DEFAULT);
-    lv_disp_set_theme(dispp, theme);
-    ui_Screen1_screen_init();
-    ui____initial_actions0 = lv_obj_create(NULL);
-    lv_disp_load_scr(ui_Screen1);
+lv_disp_t *dispp = lv_disp_get_default();
+lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), false, LV_FONT_DEFAULT);
+lv_disp_set_theme(dispp, theme);
+ui_Screen1_screen_init();
+ui____initial_actions0 = lv_obj_create(NULL);
+lv_disp_load_scr( ui_Screen1);
 }
