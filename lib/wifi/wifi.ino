@@ -77,7 +77,6 @@ void gps_ws()
             // 保留整数
             if (time == 0)
             {
-                lv_label_set_text_fmt(ui_gpsTime, "%s", "无信号");
                 lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_MULTIPLY, 0);
             }
             else
