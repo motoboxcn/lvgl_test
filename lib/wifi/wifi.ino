@@ -39,25 +39,36 @@ void connectToWiFi()
 
     while (WiFi.status() != WL_CONNECTED)
     {
+        lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_MULTIPLY, 0);
         Serial.print(".");
-        wifi_icon_loop();
     }
+    lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_NORMAL, 0);
 
     Serial.println();
     Serial.print("Connected! IP address: ");
     Serial.println(WiFi.localIP());
 }
 
-WebsocketsClient client_gps;
-void gps_ws()
+WebsocketsClient client;
+void all_ws()
 {
-    // 连接到 WebSockets 服务器
-    bool gps_ws = client_gps.connect(websockets_server_host, websockets_server_port, "/ws/gps");
-    if (gps_ws)
+    // 判断wifi连接还在不在
+    if (WiFi.status() != WL_CONNECTED)
     {
-        Serial.println("Connected to GPS WebSockets server");
-        // run callback when messages are received
-        client_gps.onMessage([&](WebsocketsMessage message){
+        lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_MULTIPLY, 0);
+    }
+    else
+    {
+        lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_NORMAL, 0);
+        // 连接到 WebSockets 服务器
+        bool gps_ws = client.connect(websockets_server_host, websockets_server_port, "/ws/all");
+        if (gps_ws)
+        {
+            lv_obj_set_style_blend_mode(ui_websocket, LV_BLEND_MODE_NORMAL, 0);
+            Serial.println("Connected to GPS WebSockets server");
+            // run callback when messages are received
+            client.onMessage([&](WebsocketsMessage message)
+                             {
             // 解析JSON消息
             DynamicJsonDocument jsonBuffer(JSON_BUFFER_SIZE);
             DeserializationError error = deserializeJson(jsonBuffer, message.data());
@@ -69,67 +80,53 @@ void gps_ws()
                 return;
             }
 
-            // 获取速度给 lv label 赋值
-            String speed = jsonBuffer["speed"];
+            int speed = jsonBuffer["speed"];
             int time = jsonBuffer["gps_time"];
-            String altitude = jsonBuffer["hight"];
-            String heading = jsonBuffer["heading"];
+            int altitude = jsonBuffer["attitude"];
+            int heading = jsonBuffer["heading"];
+            int roll =  jsonBuffer["roll"];
+            int pitch =  jsonBuffer["pitch"];
+            bool isTripOn = jsonBuffer["is_trip_on"];
+            String location = jsonBuffer["location"];
+
             // 保留整数
             if (time == 0)
             {
                 lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_MULTIPLY, 0);
+                Serial.println("无信号");
             }
             else
             {
                 lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_NORMAL, 0);
-                speed = speed.substring(0, speed.indexOf("."));
-                heading = heading.substring(0, heading.indexOf("."));
-                altitude = altitude.substring(0, altitude.indexOf("."));
-                lv_arc_set_value(ui_speed, static_cast<int>(speed.toInt()));
-                lv_label_set_text_fmt(ui_speed2, "%s", static_cast<String>(speed));
+                // speed
+                lv_arc_set_value(ui_speed, speed);
+                lv_label_set_text_fmt(ui_speed2, "%d", speed);
+                // time
                 lv_label_set_text_fmt(ui_gpsTime, "%s", formatUnixTime(time).c_str());
-                lv_label_set_text_fmt(ui_haibaText, "%sm", static_cast<String>(altitude));
-                lv_label_set_text_fmt(ui_handingText, "%s°", static_cast<String>(heading));
-                lv_img_set_angle(ui_handing, heading.toInt() * 10);
-            }});
-    }
-    else
-    {
-        ws_icon_loop();
-        Serial.println("GPS WebSockets server connection failed!");
-    }
-}
-WebsocketsClient client_gyro;
-void gyro_ws()
-
-{
-    // 连接到 WebSockets 服务器
-    bool gyro_ws = client_gyro.connect(websockets_server_host, websockets_server_port, "/ws/gyro");
-    if (gyro_ws)
-    {
-        Serial.println("Connected to Gyro WebSockets server");
-        // run callback when messages are received
-        client_gyro.onMessage([&](WebsocketsMessage message)
-                              {
-            DynamicJsonDocument jsonBuffer(JSON_BUFFER_SIZE);
-            DeserializationError error = deserializeJson(jsonBuffer, message.data());
-            // 检查解析是否成功
-            if (error) {
-                Serial.print(F("deserializeJson() failed with code "));
-                return;
-            }
-            String roll = jsonBuffer["Roll"];
-            roll = roll.substring(0, roll.indexOf("."));
-            // 更新 LVGL 控件
-            lv_label_set_text_fmt(ui_rollText, "%d°", roll.toInt());
-            lv_img_set_angle(ui_motoRoll, roll.toInt()*10); 
-            Serial.println(roll);
-            });
-    }
-    else
-    {
-        ws_icon_loop();
-        Serial.println("Gyro WebSockets server connection failed!");
+                // attitude
+                lv_label_set_text_fmt(ui_haibaText, "%dm", altitude);
+                // heading
+                lv_label_set_text_fmt(ui_handingText, "%d°", heading);
+                lv_img_set_angle(ui_handing, heading * 10);
+                // roll
+                lv_img_set_angle(ui_motoRoll,roll*10);
+                lv_label_set_text_fmt(ui_rollText, "%d°", roll);
+                // location
+                lv_label_set_text_fmt(ui_suzhou,"%s",location);
+                if (isTripOn)
+                {
+                    lv_obj_set_style_blend_mode(ui_luxiang, LV_BLEND_MODE_NORMAL, 0);
+                }
+                else{
+                    lv_obj_set_style_blend_mode(ui_luxiang, LV_BLEND_MODE_MULTIPLY, 0);
+                }; 
+            } });
+        }
+        else
+        {
+            lv_obj_set_style_blend_mode(ui_websocket, LV_BLEND_MODE_MULTIPLY, 0);
+            Serial.println("GPS WebSockets server connection failed!");
+        }
     }
 }
 
@@ -137,26 +134,17 @@ void wifi_init()
 {
     // 连接到 WiFi
     connectToWiFi();
-    gps_ws();
-    gyro_ws();
+    all_ws();
 }
 
 void wifi_loop()
 {
-    if (client_gyro.available())
+    if (client.available())
     {
-        client_gyro.poll();
+        client.poll();
     }
     else
     {
-        gyro_ws();
-    }
-    if (client_gps.available())
-    {
-        client_gps.poll();
-    }
-    else
-    {
-        gps_ws();
+        all_ws();
     }
 }

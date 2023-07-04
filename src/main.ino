@@ -45,13 +45,18 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
     lv_disp_flush_ready(disp);
 }
 
-void setup()
+void initSerial()
 {
     Serial.begin(9600); /* prepare for possible serial debug */
     String LVGL_Arduino = "Hello Arduino! ";
     LVGL_Arduino += String('V') + lv_version_major() + "." + lv_version_minor() + "." + lv_version_patch();
     Serial.println(LVGL_Arduino);
     Serial.println("I am LVGL_Arduino");
+}
+
+void setup()
+{
+    initSerial();
     
     lv_init();
 
@@ -61,8 +66,9 @@ void setup()
 
     tft.begin();        /* TFT init */
     tft.setRotation(1); /* Landscape orientation, flipped */
-    lv_disp_draw_buf_init(&draw_buf, buf, NULL, screenWidth * screenHeight / 10);
+    
 
+    lv_disp_draw_buf_init(&draw_buf, buf, NULL, screenWidth * screenHeight / 10);
     /*Initialize the display*/
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
@@ -72,20 +78,10 @@ void setup()
     disp_drv.flush_cb = my_disp_flush;
     disp_drv.draw_buf = &draw_buf;
     lv_disp_drv_register(&disp_drv);
+
+    
     ui_init();
-    Serial.println("Setup done");
-    for (int i = 0; i <= 299; i+=1)
-    {
-        lv_arc_set_value(ui_speed, i);
-        lv_label_set_text_fmt(ui_speed2,"%d",i);
-        lv_timer_handler();
-    }
-    for (int i = 299; i >=0; i--)
-    {
-        lv_arc_set_value(ui_speed, i);
-        lv_label_set_text_fmt(ui_speed2,"%d",i);
-        lv_timer_handler();
-    }
+    init_speed_dashboard();
     wifi_init();
     Serial.println("Setup done");
 }
