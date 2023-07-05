@@ -15,6 +15,10 @@ const size_t JSON_BUFFER_SIZE = JSON_OBJECT_SIZE(11) + 320;
 
 String formatUnixTime(unsigned long timestamp)
 {
+    // 设置系统时区为东八区（北京时间）
+    setenv("TZ", "CST-8", 1);
+    tzset();
+
     // 将 UNIX 时间戳转换为 struct tm 结构
     struct tm *tm;
     time_t t = (time_t)timestamp;
@@ -22,8 +26,6 @@ String formatUnixTime(unsigned long timestamp)
 
     // 格式化日期和时间
     char buffer[20];
-    // UTC to 北京时间
-    tm->tm_hour += 8;
     strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", tm);
 
     return String(buffer);
@@ -41,6 +43,7 @@ void connectToWiFi()
     {
         lv_obj_set_style_blend_mode(ui_wifi, LV_BLEND_MODE_MULTIPLY, 0);
         Serial.print(".");
+        lv_timer_handler();
         delay(5);
     }
     lv_obj_set_style_blend_mode(ui_wifi, LV_BLEND_MODE_NORMAL, 0);
