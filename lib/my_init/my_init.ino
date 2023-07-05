@@ -19,18 +19,20 @@ void trip_on()
 
 void init_speed_dashboard()
 {
-    for (int i = 0; i <= 299; i+=1)
+    for (int i = 0; i <= 299; i+=2)
     {
         lv_arc_set_value(ui_speed, i);
         lv_label_set_text_fmt(ui_speed2,"%d",i);
         lv_timer_handler();
+        delay(5);
         Serial.println(i);
     }
-    for (int j = 298; j >=0; j--)
+    for (int j = 298; j >=0; j-=2)
     {
         lv_arc_set_value(ui_speed, j);
         lv_label_set_text_fmt(ui_speed2,"%d",j);
         lv_timer_handler();
+        delay(5);
         Serial.println(j);
     }
 }

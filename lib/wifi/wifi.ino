@@ -39,10 +39,11 @@ void connectToWiFi()
 
     while (WiFi.status() != WL_CONNECTED)
     {
-        lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_MULTIPLY, 0);
+        lv_obj_set_style_blend_mode(ui_wifi, LV_BLEND_MODE_MULTIPLY, 0);
         Serial.print(".");
+        delay(5);
     }
-    lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_NORMAL, 0);
+    lv_obj_set_style_blend_mode(ui_wifi, LV_BLEND_MODE_NORMAL, 0);
 
     Serial.println();
     Serial.print("Connected! IP address: ");
@@ -93,7 +94,6 @@ void all_ws()
             if (time == 0)
             {
                 lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_MULTIPLY, 0);
-                Serial.println("无信号");
             }
             else
             {
@@ -108,9 +108,7 @@ void all_ws()
                 // heading
                 lv_label_set_text_fmt(ui_handingText, "%d°", heading);
                 lv_img_set_angle(ui_handing, heading * 10);
-                // roll
-                lv_img_set_angle(ui_motoRoll,roll*10);
-                lv_label_set_text_fmt(ui_rollText, "%d°", roll);
+                
                 // location
                 lv_label_set_text_fmt(ui_suzhou,"%s",location);
                 if (isTripOn)
@@ -120,7 +118,10 @@ void all_ws()
                 else{
                     lv_obj_set_style_blend_mode(ui_luxiang, LV_BLEND_MODE_MULTIPLY, 0);
                 }; 
-            } });
+            } 
+            // set roll
+                lv_img_set_angle(ui_motoRoll,roll*10);
+                lv_label_set_text_fmt(ui_rollText, "%d°", roll); });
         }
         else
         {
