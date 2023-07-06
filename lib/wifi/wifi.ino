@@ -92,6 +92,8 @@ void all_ws()
             int pitch =  jsonBuffer["pitch"];
             bool isTripOn = jsonBuffer["is_trip_on"];
             String location = jsonBuffer["location"];
+            String lon = jsonBuffer["lon"];
+            String lat = jsonBuffer["lat"];
 
             // 保留整数
             if (time == 0)
@@ -113,7 +115,8 @@ void all_ws()
                 lv_img_set_angle(ui_handing, heading * 10);
                 
                 // location
-                lv_label_set_text_fmt(ui_suzhou,"%s",location);
+                lv_label_set_text_fmt(ui_suzhou,"%s,%s",lon,lat);
+
                 if (isTripOn)
                 {
                     lv_obj_set_style_blend_mode(ui_luxiang, LV_BLEND_MODE_NORMAL, 0);

@@ -75,7 +75,7 @@ lv_obj_set_height( ui_suzhou, LV_SIZE_CONTENT);   /// 1
 lv_obj_set_x( ui_suzhou, 11 );
 lv_obj_set_y( ui_suzhou, 72 );
 lv_obj_set_align( ui_suzhou, LV_ALIGN_CENTER );
-lv_label_set_text(ui_suzhou,"SuZhou");
+lv_label_set_text(ui_suzhou,"-");
 lv_obj_set_style_text_color(ui_suzhou, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT );
 lv_obj_set_style_text_opa(ui_suzhou, 255, LV_PART_MAIN| LV_STATE_DEFAULT);
 lv_obj_set_style_text_font(ui_suzhou, &lv_font_montserrat_16, LV_PART_MAIN| LV_STATE_DEFAULT);
