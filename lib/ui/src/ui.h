@@ -32,7 +32,6 @@ extern lv_obj_t *ui_speed;
 extern lv_obj_t *ui_speed2;
 extern lv_obj_t *ui_Label1;
 extern lv_obj_t *ui_haiba;
-extern lv_obj_t *ui_location;
 extern lv_obj_t *ui_suzhou;
 extern lv_obj_t *ui_motoRoll;
 extern lv_obj_t *ui_rollText;

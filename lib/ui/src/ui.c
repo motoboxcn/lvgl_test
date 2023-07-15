@@ -16,7 +16,6 @@ lv_obj_t *ui_speed;
 lv_obj_t *ui_speed2;
 lv_obj_t *ui_Label1;
 lv_obj_t *ui_haiba;
-lv_obj_t *ui_location;
 lv_obj_t *ui_suzhou;
 lv_obj_t *ui_motoRoll;
 lv_obj_t *ui_rollText;
