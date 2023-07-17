@@ -19,7 +19,7 @@ lv_obj_set_height( ui_speed, 150);
 lv_obj_set_x( ui_speed, 10 );
 lv_obj_set_y( ui_speed, -10 );
 lv_obj_set_align( ui_speed, LV_ALIGN_BOTTOM_LEFT );
-lv_arc_set_range(ui_speed, 0,299);
+lv_arc_set_range(ui_speed, 0,ui_speed_top);
 lv_arc_set_value(ui_speed, 199);
 
 lv_obj_set_style_arc_color(ui_speed, lv_color_hex(0x40FFDF), LV_PART_INDICATOR | LV_STATE_DEFAULT );
