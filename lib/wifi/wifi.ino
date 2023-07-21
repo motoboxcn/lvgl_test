@@ -2,7 +2,7 @@
 #include <ArduinoJson.h>
 #include <ArduinoWebsockets.h>
 #include <lvgl.h>
-#include <ui.h>
+#include <TFT_eSPI.h>
 #include <my_init.ino>
 
 using namespace websockets;
@@ -135,7 +135,7 @@ void all_ws()
             lv_obj_set_style_blend_mode(ui_websocket, LV_BLEND_MODE_MULTIPLY, 0);
             lv_obj_set_style_blend_mode(ui_weixing, LV_BLEND_MODE_MULTIPLY, 0);
             lv_obj_set_style_blend_mode(ui_luxiang, LV_BLEND_MODE_MULTIPLY, 0);
-            Serial.println("GPS WebSockets server connection failed!");
+            Serial.println("GPS WebSockets server connection failed!delay 5s");
             delay(5000);
         }
     }

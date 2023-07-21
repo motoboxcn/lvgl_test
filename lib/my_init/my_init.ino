@@ -61,7 +61,7 @@ void ui_trip_off()
 
 void init_speed_dashboard()
 {
-    for (int i = 0; i <= ui_speed_top; i += 2)
+    for (int i = 0; i <= 299; i += 2)
     {
         // speed dashboard
         lv_arc_set_value(ui_speed, i);
@@ -70,7 +70,7 @@ void init_speed_dashboard()
         delay(5);
         Serial.println(i);
     }
-    for (int j = ui_speed_top; j >= 0; j -= 2)
+    for (int j = 299; j >= 0; j -= 2)
     {
         // speed dashboard
         lv_arc_set_value(ui_speed, j);
