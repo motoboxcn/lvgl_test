@@ -1,3 +1,4 @@
+#include <esp_adc_cal.h>
 #include <lvgl.h>
 #include <ui.h>
 
@@ -53,7 +54,6 @@ void speed_dashboard(int speed)
 {
     lv_arc_set_value(ui_speed, speed);
     lv_label_set_text_fmt(ui_speed2, "%d", speed);
-    int delay;
 
     if (speed < 80)
     {
@@ -94,4 +94,42 @@ void init_speed_dashboard()
     // Reset dashboard
     speed_dashboard(0);
     lv_timer_handler();
+}
+
+
+
+// 初始化ADC配置
+void init_adc()
+{
+    adc1_config_width(ADC_WIDTH_BIT_12); // 设置ADC位宽为12位
+    adc1_config_channel_atten(ADC1_CHANNEL_7, ADC_ATTEN_DB_0); // 设置通道7的衰减为0dB
+}
+
+// 电压检测 电量展示
+void battery_dashboard(int battery)
+{
+    if (battery < 3300)
+    {
+        lv_img_set_src(ui_bettery, &ui_img_dianliang_png);
+    }
+    else if (battery < 3600)
+    {
+        lv_img_set_src(ui_bettery, &ui_img_dianliang1_png);
+    }
+    else
+    {
+        lv_img_set_src(ui_bettery, &ui_img_dianliang2_png);
+    }
+    lv_img_set_src(ui_bettery, &ui_img_dianliang2_png);
+}
+
+// 获取电压值
+int get_battery()
+{
+    // 读取ADC值
+    uint32_t adc_reading = adc1_get_raw(ADC1_CHANNEL_7);
+
+    // 根据VREF和ADC最大值（2^12）计算电压值
+    int voltage = (adc_reading * 1100) / 4095; // 若您的ADC位宽不是12位，则需要根据实际位宽修改这里的计算公式
+    battery_dashboard(voltage);
 }

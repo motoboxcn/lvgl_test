@@ -43,6 +43,7 @@ extern lv_obj_t *ui_haibaText;
 extern lv_obj_t *ui_gpsTime;
 extern lv_obj_t *ui_handing;
 extern lv_obj_t *ui_handingText;
+extern lv_obj_t *ui_bettery;
 extern lv_obj_t *ui____initial_actions0;
 
 LV_IMG_DECLARE( ui_img_haiba_png);   // assets/haiba.png
@@ -52,10 +53,15 @@ LV_IMG_DECLARE( ui_img_953604683);   // assets/wifi-2.png
 LV_IMG_DECLARE( ui_img_lianjie_png);   // assets/lianjie.png
 LV_IMG_DECLARE( ui_img_weixing_png);   // assets/weixing.png
 LV_IMG_DECLARE( ui_img_direction_png);   // assets/direction.png
+LV_IMG_DECLARE( ui_img_dianliang_png);   // assets/dianliang.png
 LV_IMG_DECLARE( ui_img_ai70_png);   // assets/ai70.png
 LV_IMG_DECLARE( ui_img_965679087);   // assets/map-b-2.png
 LV_IMG_DECLARE( ui_img_1753992569);   // assets/motuoche-diandongche-2.png
 LV_IMG_DECLARE( ui_img_1743932013);   // assets/wuwifi-2.png
+LV_IMG_DECLARE( ui_img_dianliang3_png);   // assets/dianliang3.png
+LV_IMG_DECLARE( ui_img_dianliang4_png);   // assets/dianliang4.png
+LV_IMG_DECLARE( ui_img_dianliang2_png);   // assets/dianliang2.png
+LV_IMG_DECLARE( ui_img_dianliang1_png);   // assets/dianliang1.png
 
 void ui_init(void);
 

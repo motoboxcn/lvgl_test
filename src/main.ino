@@ -55,8 +55,9 @@ void initSerial()
 
 void setup()
 {
+
     initSerial();
-    
+    init_adc();
     lv_init();
 
 #if LV_USE_LOG != 0
@@ -89,5 +90,6 @@ void loop()
 {
     wifi_loop();
     lv_timer_handler(); /* let the GUI do its work */
+    // get_battery();
     delay(5);
 }
