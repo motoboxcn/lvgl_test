@@ -105,7 +105,7 @@ void all_ws()
             {
                 ui_gps_on();
                 // speed
-                speed_dashboard(speed);
+                speed_dashboard(speed*1.852);
                 // time
                 lv_label_set_text_fmt(ui_gpsTime, "%s", formatUnixTime(time).c_str());
                 // attitude
